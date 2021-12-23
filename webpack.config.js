@@ -1,5 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
+const { GenerateSW } = require('workbox-webpack-plugin')
 var webpack = require('webpack')
 require('dotenv').config({ path: './.env' })
 
@@ -43,6 +45,16 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(process.env),
+    }),
+    new CopyPlugin({
+      patterns: [{ from: 'public', to: './' }],
+    }),
+    new GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+      swDest: 'service-worker.js',
+      maximumFileSizeToCacheInBytes: 1000000000000,
+      // Any other config if needed.
     }),
   ],
 }
